@@ -1,8 +1,6 @@
 ﻿// Author: Daniele Giardini - http://www.demigiant.com
 // Created: 2018/07/13
 
-using System;
-using System.Reflection;
 using UnityEngine;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Core.PathCore;
@@ -27,14 +25,9 @@ namespace DG.Tweening
     {
         static bool _initialized;
 
-        #region Reflection
-
         /// <summary>
         /// Called via Reflection by DOTweenComponent on Awake
         /// </summary>
-#if UNITY_2018_1_OR_NEWER
-        [UnityEngine.Scripting.Preserve]
-#endif
         public static void Init()
         {
             if (_initialized) return;
@@ -43,7 +36,7 @@ namespace DG.Tweening
             DOTweenExternalCommand.SetOrientationOnPath += Physics.SetOrientationOnPath;
 
 #if UNITY_EDITOR
-#if UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_2017_1
+#if UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5
             UnityEditor.EditorApplication.playmodeStateChanged += PlaymodeStateChanged;
 #else
             UnityEditor.EditorApplication.playModeStateChanged += PlaymodeStateChanged;
@@ -51,23 +44,9 @@ namespace DG.Tweening
 #endif
         }
 
-#if UNITY_2018_1_OR_NEWER
-#pragma warning disable
-        [UnityEngine.Scripting.Preserve]
-        // Just used to preserve methods when building, never called
-        static void Preserver()
-        {
-            Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            MethodInfo mi = typeof(MonoBehaviour).GetMethod("Stub");
-        }
-#pragma warning restore
-#endif
-
-        #endregion
-
 #if UNITY_EDITOR
         // Fires OnApplicationPause in DOTweenComponent even when Editor is paused (otherwise it's only fired at runtime)
-#if UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_2017_1
+#if UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5
         static void PlaymodeStateChanged()
         #else
         static void PlaymodeStateChanged(UnityEditor.PlayModeStateChange state)
@@ -110,9 +89,6 @@ namespace DG.Tweening
 
             // Called via Reflection by DOTweenPathInspector
             // Returns FALSE if the DOTween's Physics Module is disabled, or if there's no rigidbody attached
-#if UNITY_2018_1_OR_NEWER
-            [UnityEngine.Scripting.Preserve]
-#endif
             public static bool HasRigidbody(Component target)
             {
 #if true // PHYSICS_MARKER
@@ -123,9 +99,6 @@ namespace DG.Tweening
             }
 
             // Called via Reflection by DOTweenPath
-#if UNITY_2018_1_OR_NEWER
-            [UnityEngine.Scripting.Preserve]
-#endif
             public static TweenerCore<Vector3, Path, PathOptions> CreateDOTweenPathTween(
                 MonoBehaviour target, bool tweenRigidbody, bool isLocal, Path path, float duration, PathMode pathMode
             ){

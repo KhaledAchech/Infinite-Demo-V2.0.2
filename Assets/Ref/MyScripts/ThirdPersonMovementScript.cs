@@ -7,11 +7,13 @@ public class ThirdPersonMovementScript : MonoBehaviour
 {
     [Header("Public References")]
     public CharacterController controller;
-    public Transform Cam;
+    //public Transform Cam;
     
-    [Header("Parameters")]
+    [Header("Movement Parameters")]
     [SerializeField]float Forwardspeed = 100f;
+    [SerializeField]float AccelarationSpeed = 300;
     [SerializeField]float pitchSpeed = 80f;
+    [SerializeField]float turnSpeed = 80f;
     [SerializeField]float leanLimit = 80f;
     [SerializeField]float lerpTime = .01f;
     [SerializeField]float offset = 5f;
@@ -30,6 +32,7 @@ public class ThirdPersonMovementScript : MonoBehaviour
     Transform myT;
     Vector3 temp;
     bool isTurning;
+    float velocity = 0f;
 
     void Awake()
     {   
@@ -66,7 +69,8 @@ public class ThirdPersonMovementScript : MonoBehaviour
 
         //Turning
         float h = Input.GetAxisRaw("Horizontal");
-        isTurning = Turn(spaceshipmain, h, leanLimit, lerpTime);
+        Turn(spaceshipmain, h, leanLimit, lerpTime);
+        
         /*if (h > 0 && !isTurning ) //************************************** to check try to figure out how to make a slight offset while turning
          {
              myT.localPosition += temp;
@@ -84,11 +88,14 @@ public class ThirdPersonMovementScript : MonoBehaviour
         Pitch(up,pitchSpeed);
 
         //perform a barrel roll
-        float dir = Input.GetAxisRaw("BarrelRoll");
-        BarrelRoll(dir);
+        BarrelRoll();
 
-        
+        //Speed Boost
+        Faster();
+
+
     }
+   
 
     //Moving Player ship forward
     void Thrust(float z, float speed)
@@ -97,12 +104,14 @@ public class ThirdPersonMovementScript : MonoBehaviour
     }
     
     //turn 
-    bool Turn(Transform target, float axis, float leanLimit, float lerpTime)
+    void Turn(Transform target, float axis, float leanLimit, float lerpTime)
     {   
-        temp = new Vector3(Mathf.LerpAngle(offset, axis * leanLimit, lerpTime), 0f, 0f);
-        Vector3 targetEulerAngels = target.localEulerAngles ;
-        target.localEulerAngles = new Vector3(targetEulerAngels.x, targetEulerAngels.y, Mathf.LerpAngle(targetEulerAngels.z , axis * leanLimit, lerpTime));
-        return true;
+        float tParam = 0;
+        Vector3 targetEulerAngels = target.localEulerAngles;
+        tParam += Time.deltaTime * turnSpeed * lerpTime;
+        target.localEulerAngles = new Vector3(targetEulerAngels.x, targetEulerAngels.y, Mathf.LerpAngle(targetEulerAngels.z, axis * leanLimit, lerpTime));
+        //target.localEulerAngles = new Vector3(targetEulerAngels.x, targetEulerAngels.y, Mathf.SmoothDampAngle(targetEulerAngels.z, axis * leanLimit, ref velocity, lerpTime));
+        myT.localPosition += new Vector3(axis, 0f, 0f) * turnSpeed * Time.deltaTime;
     }
     
     // pitch up or down 
@@ -112,14 +121,37 @@ public class ThirdPersonMovementScript : MonoBehaviour
         myT.Rotate(-p,0,0);
     }
 
-    //performs a barrel roll
-    void BarrelRoll(float dir)
-    {
-        if (!DOTween.IsTweening(spaceshipmain))
+     //performs a barrel roll
+    void BarrelRoll()
+    {   
+        if (Input.GetButtonDown("BarrelRoll"))
         {
-            spaceshipmain.DOLocalRotate(new Vector3(spaceshipmain.localEulerAngles.x, spaceshipmain.localEulerAngles.y, 360 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine);
-            //barrel.Play(); adding the effects
+            int dir = Input.GetButtonDown("BarrelRoll") ? -1 : 1;
+            if (!DOTween.IsTweening(spaceshipmain))
+            {
+                spaceshipmain.DOLocalRotate(new Vector3(spaceshipmain.localEulerAngles.x, spaceshipmain.localEulerAngles.y, 360 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine);
+                //barrel.Play(); adding the effects
+            }
         }
+    }
+
+    //More Speed
+    void Faster()
+    {
+        if (Input.GetAxis("Faster") > 0)
+        {
+           myT.position += myT.forward * AccelarationSpeed * Time.deltaTime * Input.GetAxis("Faster");
+           //ToggleSpeedLinesParticleSystem();
+           //speedlines.Emit(5);
+           //StarsDust.Emit(5);
+        }
+        else
+        {
+           //speedlines.Stop();
+           //StarsDust.Stop();
+        }
+    
+            
     }
 
 }

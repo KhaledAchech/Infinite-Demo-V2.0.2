@@ -5,7 +5,6 @@
 using System;
 using UnityEngine;
 using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 
 #pragma warning disable 1591
 namespace DG.Tweening
@@ -19,21 +18,18 @@ namespace DG.Tweening
         /// <summary>Tweens a SpriteRenderer's color to the given value.
         /// Also stores the spriteRenderer as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOColor(this SpriteRenderer target, Color endValue, float duration)
+        public static Tweener DOColor(this SpriteRenderer target, Color endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
+            return DOTween.To(() => target.color, x => target.color = x, endValue, duration).SetTarget(target);
         }
 
         /// <summary>Tweens a Material's alpha color to the given value.
         /// Also stores the spriteRenderer as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOFade(this SpriteRenderer target, float endValue, float duration)
+        public static Tweener DOFade(this SpriteRenderer target, float endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.ToAlpha(() => target.color, x => target.color = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
+            return DOTween.ToAlpha(() => target.color, x => target.color = x, endValue, duration)
+                .SetTarget(target);
         }
 
         /// <summary>Tweens a SpriteRenderer's color using the given gradient
@@ -56,7 +52,6 @@ namespace DG.Tweening
                     : duration * (i == 0 ? c.time : c.time - colors[i - 1].time);
                 s.Append(target.DOColor(c.color, colorDuration).SetEase(Ease.Linear));
             }
-            s.SetTarget(target);
             return s;
         }
 

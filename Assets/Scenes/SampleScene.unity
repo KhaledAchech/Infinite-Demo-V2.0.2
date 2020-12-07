@@ -190,7 +190,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 432297986}
-  m_LocalRotation: {x: 0.12993279, y: 0.000000017060518, z: -0.000000002235673, w: 0.99152285}
+  m_LocalRotation: {x: 0.12993279, y: -0.000000017060522, z: 0.0000000022356734, w: 0.99152285}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -698,8 +698,8 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0.5
-  m_VerticalDamping: 0.5
+  m_HorizontalDamping: 0.2
+  m_VerticalDamping: 0.2
   m_ScreenX: 0.5
   m_ScreenY: 0.70526314
   m_DeadZoneWidth: 0
@@ -1113,7 +1113,7 @@ MonoBehaviour:
     m_MaxSpeed: 4
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse Y
+    m_InputAxisName: 
     m_InputAxisValue: 0
     m_InvertInput: 0
     m_MinValue: 0
@@ -1137,7 +1137,7 @@ MonoBehaviour:
     m_MaxSpeed: 300
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse X
+    m_InputAxisName: 
     m_InputAxisValue: 0
     m_InvertInput: 1
     m_MinValue: -180
@@ -1274,12 +1274,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 1911496272}
-  Cam: {fileID: 0}
   Forwardspeed: 100
   pitchSpeed: 80
-  leanLimit: 70
+  turnSpeed: 80
+  leanLimit: 60
   lerpTime: 0.01
-  offset: 1
+  offset: 0.5
   trail: {fileID: 0}
   circle: {fileID: 0}
   barrel: {fileID: 0}
@@ -2211,7 +2211,7 @@ PrefabInstance:
     - target: {fileID: 318287949305945755, guid: 57567dfbfa2d39b4d858fec33d905ae6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 318287949305945766, guid: 57567dfbfa2d39b4d858fec33d905ae6,
         type: 3}
