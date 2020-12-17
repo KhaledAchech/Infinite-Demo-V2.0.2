@@ -4,37 +4,41 @@ using UnityEngine;
 
 public class CamraControl : MonoBehaviour
 {   
+
+        [Tooltip("The ship to follow around.")]
+        [SerializeField] private Transform ship = null;
+
+        [Tooltip("Enable if the target to follow is being updated during FixedUpdate (e.g. if it is a Rigidbody using physics).")]
+        [SerializeField] private bool useFixed = true;
+
+        [Tooltip("How quickly the camera rotates to new positions. Tweak this values to get something that feels good. High values will result in tighter camera motion.")]
+        [SerializeField] private float smoothSpeed = 10f;
+
+        private void Update()
+        {
+            if (useFixed == false)
+                MoveCamera();
+        }
+
+        private void FixedUpdate()
+        {
+            if (useFixed == true)
+                MoveCamera();
+        }
+
+        private void MoveCamera()
+        {
+            if (ship == null)
+                return;
+
+            // Follow the ship around.
+            transform.position = ship.position;
+
+            // Using the look rotation of the ship's forward along with the rigs own up means
+            // that the rig will follow the ship's rotation in pitch and yaw, but NOT in roll.
+            // This allows the ship to roll on it own.
+            var targetRigRotation = Quaternion.LookRotation(ship.forward, transform.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRigRotation, Time.deltaTime);
+        }
     
-    [SerializeField]float bias = 0.96f;
-    [SerializeField]float CamForwardSpeed = 10.0f;
-    [SerializeField]float CamUpSpeed = 5.0f;
-    [SerializeField]float OffsetValue = 1.0f;
-    [SerializeField]float FollowSpeed = 30.0f;
-    [SerializeField]Transform target;
-
-    //init myT
-    Transform myT;
-    void Awake()
-    {
-        myT = transform;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        FollowCam();
-    }
-
-    void FollowCam()
-    {
-        Vector3 MoveCamTo = target.position - target.forward * CamForwardSpeed + Vector3.up * CamUpSpeed;
-        myT.position = myT.position * bias + MoveCamTo * (OffsetValue - bias);
-        myT.LookAt(target.position + target.forward * FollowSpeed);
-    }
 }
