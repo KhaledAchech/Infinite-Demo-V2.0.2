@@ -28,7 +28,6 @@ public class ThirdPersonMovementScript : MonoBehaviour
 
     [Header("Particles")]
     public ParticleSystem trail;
-    public ParticleSystem circle;
     public ParticleSystem barrel;
     public ParticleSystem stars;
 
@@ -53,6 +52,7 @@ public class ThirdPersonMovementScript : MonoBehaviour
         PressedOnce= true;
         reset = false;
         isBoosting = false;
+        
     }
 
     // Update is called once per frame
@@ -79,6 +79,7 @@ public class ThirdPersonMovementScript : MonoBehaviour
         //Moving Forward
         float v = Input.GetAxisRaw("Vertical");
         if ( v > 0) {Thrust(v,Forwardspeed);}
+        else{trail.Stop();}
 
         //Turning
         float h = Input.GetAxisRaw("Horizontal");
@@ -109,8 +110,6 @@ public class ThirdPersonMovementScript : MonoBehaviour
 
         //Speed Boost
         Faster();
-
-
     }
    
 
@@ -118,6 +117,7 @@ public class ThirdPersonMovementScript : MonoBehaviour
     void Thrust(float z, float speed)
     {
        myT.localPosition += new Vector3(0f, 0f, z) * speed * Time.deltaTime;
+       //trail.Play();
     }
     
     //turn 
@@ -160,7 +160,7 @@ public class ThirdPersonMovementScript : MonoBehaviour
                     if (!DOTween.IsTweening(spaceshipmain))
                     {
                          myT.DOLocalRotate(new Vector3(spaceshipmain.localEulerAngles.x, spaceshipmain.localEulerAngles.y, 360 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine);
-                        //barrel.Play(); adding the effects
+                        barrel.Play(); //Particle effect
                     }
              } else 
              {
@@ -210,7 +210,10 @@ public class ThirdPersonMovementScript : MonoBehaviour
         if (Input.GetAxis("Faster") > 0 && !isPitching)
         {
            myT.position += myT.forward * AccelarationSpeed * Time.deltaTime * Input.GetAxis("Faster");
+           //trail.Play();
            isBoosting = true;
+           //circle.Play();
+            //circle.Play();
            //ToggleSpeedLinesParticleSystem();
            //speedlines.Emit(5);
            //StarsDust.Emit(5);
@@ -218,10 +221,11 @@ public class ThirdPersonMovementScript : MonoBehaviour
         else
         {
             isBoosting = false;
+
            //speedlines.Stop();
            //StarsDust.Stop();
         }
-    
+
             
     }
 
